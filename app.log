@@ -1,0 +1,2 @@
+[2026-09-16 18:55:16] LOGIN ATTEMPT email='admin@guardianmart.local' password='Welcome@123' ip=127.0.0.1
+[2026-09-16 18:55:16] LOGIN OK user_id=1 role=admin cookie='user_id:1|role:admin|dept:it-security'
