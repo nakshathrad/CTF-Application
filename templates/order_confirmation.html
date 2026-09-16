@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Order placed &mdash; GuardianMart{% endblock %}
+
+{% block content %}
+<h1>Order placed</h1>
+<p class="page-sub">Thank you. Your benefits order has been recorded.</p>
+
+{% if flag %}
+  {% set flag_value = flag %}
+  {% set flag_note = 'The order total came to ' ~ '%.2f'|format(total) ~ ' and was accepted anyway. The server never re-priced the basket.' %}
+  {% include "_flag.html" %}
+{% endif %}
+
+<div class="card form-narrow">
+  <table>
+    <tr><th>Order number</th><td>#{{ order_id }}</td></tr>
+    <tr><th>Order total</th><td>&#8377;{{ '%.2f'|format(total) }}</td></tr>
+    <tr><th>Status</th><td>placed</td></tr>
+  </table>
+  <p style="margin-top:14px;">
+    <a class="btn btn-sm" href="{{ url_for('order_detail', order_id=order_id) }}">View order</a>
+    <a class="btn btn-sm btn-secondary" href="{{ url_for('orders') }}">All my orders</a>
+  </p>
+</div>
+{% endblock %}

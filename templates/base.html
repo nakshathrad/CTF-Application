@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}GuardianMart{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+
+  <!-- A03: vendored third-party assets, loaded with no Subresource Integrity
+       attribute and no version verification. See /static/vendor/package.json -->
+  <script src="{{ url_for('static', filename='vendor/jquery-1.4.2.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/analytics.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
+<body>
+
+<div class="training-banner">{{ training_banner }}</div>
+
+<nav class="navbar">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('home') }}">GuardianMart</a>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('products') }}">Catalogue</a>
+    {% if logged_in_session %}
+      <a href="{{ url_for('basket') }}">Basket</a>
+      <a href="{{ url_for('orders') }}">My Orders</a>
+      <a href="{{ url_for('claims') }}">Claims</a>
+      <a href="{{ url_for('support') }}">Support</a>
+      {# A01b: the admin links are hidden from normal users here, but the
+         /admin route itself has no role check. Hiding a link is not a control. #}
+      {% if logged_in_session.role == 'admin' %}
+        <a href="{{ url_for('admin_panel') }}">Admin</a>
+        <a href="{{ url_for('support_admin') }}">Ticket Queue</a>
+      {% endif %}
+      <a href="{{ url_for('profile') }}">Profile</a>
+      <span class="nav-user">
+        {{ logged_in_user.name if logged_in_user else 'Unknown user' }}
+        {% if logged_in_session.role == 'admin' %}<span class="pill pill-admin">admin</span>{% endif %}
+      </span>
+      <a href="{{ url_for('logout') }}">Log out</a>
+    {% else %}
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('login') }}">Log in</a>
+      <a href="{{ url_for('register') }}">Register</a>
+    {% endif %}
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    GuardianMart &mdash; internal employee benefits portal (training instance).
+    <a href="{{ url_for('about') }}">About &amp; Privacy</a>
+  </div>
+</footer>
+
+</body>
+</html>

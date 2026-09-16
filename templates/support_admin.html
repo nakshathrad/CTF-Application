@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Ticket queue &mdash; GuardianMart{% endblock %}
+
+{% block content %}
+<h1>Support ticket queue</h1>
+<p class="page-sub">All tickets raised across the organisation ({{ tickets|length }}).</p>
+
+{# A05b: hidden until an alert() actually fires on this page. The detector
+   lives in static/js/app.js and only *observes* — it reveals a flag the
+   server already sent down. Nothing is executed on the player's behalf. #}
+<div id="xss-flag-box" style="display:none;">
+  {% set flag_value = xss_flag %}
+  {% set flag_note = 'A stored payload just executed in the helpdesk agent\'s browser. The ticket text is rendered with autoescaping disabled.' %}
+  {% include "_flag.html" %}
+</div>
+
+{% if tickets %}
+  {% for t in tickets %}
+    <div class="card">
+      <div class="card-title">
+        #{{ t.id }} &mdash; {{ t.subject }}
+        <span class="muted" style="font-weight:400;">
+          &middot; raised by user ID {{ t.user_id }} &middot; {{ t.created_at }}
+        </span>
+      </div>
+      {# THE BUG: |safe disables Jinja's autoescaping for this field. #}
+      <div class="ticket-body">{{ t.message|safe }}</div>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="card empty-state">No tickets in the queue.</div>
+{% endif %}
+{% endblock %}

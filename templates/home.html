@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}GuardianMart &mdash; Employee Benefits{% endblock %}
+
+{% block content %}
+<div class="hero">
+  <h1>Your benefits, in one place</h1>
+  <p>
+    Browse wellness kits, insurance add-ons, gift vouchers and tech perks
+    available to Guardian LIC India staff. Place an order, upload a claim
+    document, or raise a support ticket.
+  </p>
+</div>
+
+<h2>Featured benefits</h2>
+<div class="grid">
+  {% for p in featured %}
+    <div class="product-card">
+      <div class="product-thumb">{{ p.name }}</div>
+      <div class="name">{{ p.name }}</div>
+      <div class="cat">{{ p.category }}</div>
+      <div class="spacer"></div>
+      <div class="price">&#8377;{{ '%.2f'|format(p.price) }}</div>
+      <a class="btn btn-sm" href="{{ url_for('product_detail', product_id=p.id) }}">View</a>
+    </div>
+  {% endfor %}
+</div>
+
+<h2>Announcements</h2>
+<div class="card">
+  <ul style="margin:0; padding-left:20px;">
+    {% for a in announcements %}
+      <li>{{ a }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

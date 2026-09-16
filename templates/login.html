@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Log in &mdash; GuardianMart{% endblock %}
+
+{% block content %}
+<h1>Log in</h1>
+<p class="page-sub">Use your GuardianMart staff account.</p>
+
+{% if welcome_flag %}
+  {% set flag_value = welcome_flag %}
+  {% set flag_note = 'Welcome back, ' ~ welcome_name ~ '. You are now signed in as that account without knowing its password.' %}
+  {% include "_flag.html" %}
+{% endif %}
+
+{% if error %}
+  <div class="alert alert-error">{{ error }}</div>
+{% endif %}
+
+<div class="card form-narrow">
+  <form method="post" action="{{ url_for('login') }}">
+    <div class="form-row">
+      <label for="email">Email address</label>
+      <input type="text" id="email" name="email" autocomplete="off" required>
+    </div>
+    <div class="form-row">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="off" required>
+    </div>
+    <div class="form-row checkbox-row">
+      <input type="checkbox" id="remember" name="remember" value="1" style="width:auto;">
+      <label for="remember">Remember me for 30 days</label>
+    </div>
+    <button class="btn" type="submit">Log in</button>
+  </form>
+</div>
+
+<p class="muted">
+  No account? <a href="{{ url_for('register') }}">Register here</a>.
+</p>
+{% endblock %}

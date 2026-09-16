@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Support &mdash; GuardianMart{% endblock %}
+
+{% block content %}
+<h1>Raise a support ticket</h1>
+<p class="page-sub">The benefits helpdesk reviews tickets within 2 working days.</p>
+
+<div class="card form-narrow">
+  <form method="post" action="{{ url_for('support') }}">
+    <div class="form-row">
+      <label for="subject">Subject</label>
+      <input type="text" id="subject" name="subject" required>
+    </div>
+    <div class="form-row">
+      <label for="message">Describe the issue</label>
+      {# A05b: whatever goes in here is stored as-is and later rendered with
+         |safe on /support/admin, so it executes in the helpdesk agent's
+         browser rather than the submitter's. #}
+      <textarea id="message" name="message" required></textarea>
+    </div>
+    <button class="btn" type="submit">Submit ticket</button>
+  </form>
+</div>
+
+<div class="card">
+  <div class="card-title">My tickets</div>
+  {% if tickets %}
+    <div class="table-wrap" style="margin-bottom:0;">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Subject</th><th>Message</th><th>Raised</th></tr>
+        </thead>
+        <tbody>
+          {% for t in tickets %}
+            <tr>
+              <td>{{ t.id }}</td>
+              <td>{{ t.subject }}</td>
+              {# Escaped correctly here, on purpose — the submitter never sees
+                 their own payload fire. Only the admin queue is vulnerable. #}
+              <td>{{ t.message }}</td>
+              <td class="nowrap">{{ t.created_at }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="muted" style="margin:0;">You have not raised any tickets yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

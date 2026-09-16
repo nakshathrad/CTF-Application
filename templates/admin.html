@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Admin panel &mdash; GuardianMart{% endblock %}
+
+{% block content %}
+<h1>Administrator panel</h1>
+<p class="page-sub">Internal use only.</p>
+
+{# A01b: this flag renders for anyone with a valid session cookie, because
+   the route checks authentication and never authorisation. #}
+{% if flag %}
+  {% set flag_value = flag %}
+  {% set flag_note = 'This page was never linked in your navigation bar, and that was the only thing keeping you out of it.' %}
+  {% include "_flag.html" %}
+{% endif %}
+
+<h2>Users ({{ users|length }})</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Name</th><th>Email</th><th>Department</th><th>Phone</th><th>Role</th></tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+        <tr>
+          <td>{{ u.id }}</td>
+          <td>{{ u.name }}</td>
+          <td>{{ u.email }}</td>
+          <td>{{ u.department or '—' }}</td>
+          <td>{{ u.phone or '—' }}</td>
+          <td>
+            {% if u.role == 'admin' %}
+              <span class="pill pill-admin">admin</span>
+            {% else %}
+              <span class="pill">user</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2>Orders ({{ orders|length }})</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>Order</th><th>User ID</th><th>Placed</th><th class="text-right">Total</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for o in orders %}
+        <tr>
+          <td>#{{ o.id }}</td>
+          <td>{{ o.user_id }}</td>
+          <td class="nowrap">{{ o.created_at }}</td>
+          <td class="text-right">&#8377;{{ '%.2f'|format(o.total) }}</td>
+          <td><span class="pill">{{ o.status }}</span></td>
+          <td><a class="btn btn-sm btn-secondary" href="{{ url_for('order_detail', order_id=o.id) }}">View</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2>Product price editor</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Product</th><th>Category</th><th>Price (&#8377;)</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for p in products %}
+        <tr>
+          <td>{{ p.id }}</td>
+          <td>{{ p.name }}</td>
+          <td>{{ p.category }}</td>
+          <td colspan="2">
+            <form method="post" action="{{ url_for('admin_update_price', product_id=p.id) }}" class="form-inline">
+              <input class="qty-input" type="text" name="price" value="{{ '%.2f'|format(p.price) }}">
+              <button class="btn btn-sm" type="submit">Save</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

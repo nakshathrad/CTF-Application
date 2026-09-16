@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}My orders &mdash; GuardianMart{% endblock %}
+
+{% block content %}
+<h1>My orders</h1>
+<p class="page-sub">Orders placed against your account.</p>
+
+{% if orders %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>Placed</th>
+          <th>Delivery address</th>
+          <th class="text-right">Total</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for o in orders %}
+          <tr>
+            <td>#{{ o.id }}</td>
+            <td class="nowrap">{{ o.created_at }}</td>
+            <td>{{ o.address }}</td>
+            <td class="text-right">&#8377;{{ '%.2f'|format(o.total) }}</td>
+            <td><span class="pill">{{ o.status }}</span></td>
+            <td><a class="btn btn-sm btn-secondary" href="{{ url_for('order_detail', order_id=o.id) }}">Details</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="card empty-state">
+    You have not placed any orders yet.
+    <div style="margin-top:12px;"><a class="btn" href="{{ url_for('products') }}">Browse the catalogue</a></div>
+  </div>
+{% endif %}
+{% endblock %}

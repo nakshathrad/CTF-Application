@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}About &mdash; GuardianMart{% endblock %}
+
+{% block content %}
+<h1>About GuardianMart</h1>
+<p class="page-sub">Employee benefits portal &mdash; training instance.</p>
+
+<div class="card">
+  <h3>What this is</h3>
+  <p>
+    GuardianMart is a fictional internal employee-benefits storefront, built
+    as a hands-on training exercise for an internal Capture The Flag event.
+    It is deliberately insecure. Every flaw in it was placed there on
+    purpose, mapped to a category in the OWASP Top 10:2025.
+  </p>
+  <p>
+    All data in this application is synthetic. The employees, orders,
+    addresses, phone numbers and support tickets are invented. No production
+    data of any kind is present, and none should ever be added.
+  </p>
+</div>
+
+<div class="card">
+  <h3>Rules of engagement</h3>
+  <ul>
+    <li>This instance runs on an isolated local network only.</li>
+    <li>Every challenge is solvable with a browser, DevTools and the URL bar. No extra tooling is needed.</li>
+    <li>Please do not attempt denial-of-service, or attack the host it runs on. Stay inside the application.</li>
+    <li>Nothing you learn here should be used against any system you are not authorised to test.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>Contact</h3>
+  <p>
+    Application Security team &mdash;
+    <a href="mailto:appsec@guardianmart.local">appsec@guardianmart.local</a><br>
+    Benefits helpdesk &mdash;
+    <a href="mailto:benefits@guardianmart.local">benefits@guardianmart.local</a>
+  </p>
+  <p class="muted">
+    GuardianMart Benefits Division, Guardian LIC Towers, OMR, Chennai 600130.
+  </p>
+</div>
+{% endblock %}

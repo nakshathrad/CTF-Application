@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Register &mdash; GuardianMart{% endblock %}
+
+{% block content %}
+<h1>Create an account</h1>
+<p class="page-sub">Staff self-registration for the benefits portal.</p>
+
+{% if error %}
+  <div class="alert alert-error">{{ error }}</div>
+{% endif %}
+
+<div class="card form-narrow">
+  <form method="post" action="{{ url_for('register') }}">
+    <div class="form-row">
+      <label for="name">Full name</label>
+      <input type="text" id="name" name="name" required>
+    </div>
+    <div class="form-row">
+      <label for="email">Work email address</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    <div class="form-row">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    <div class="form-row">
+      <label for="department">Department</label>
+      <select id="department" name="department">
+        <option>Finance</option>
+        <option>Operations</option>
+        <option>HR</option>
+        <option>IT</option>
+        <option>Sales</option>
+        <option>Marketing</option>
+        <option>Legal</option>
+        <option>Claims</option>
+      </select>
+    </div>
+    <button class="btn" type="submit">Register</button>
+  </form>
+</div>
+
+<p class="muted">Already registered? <a href="{{ url_for('login') }}">Log in</a>.</p>
+{% endblock %}

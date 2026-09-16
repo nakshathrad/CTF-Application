@@ -1,0 +1,9 @@
+{# Shared flag banner. The flag is only ever *displayed* — nothing is
+   executed or unlocked. Week 2's scoreboard takes over submission. #}
+<div class="flag-box">
+  <div class="flag-label">Challenge solved &mdash; flag captured</div>
+  <div class="flag-value">{{ flag_value }}</div>
+  <div class="flag-note">
+    {{ flag_note|default('Copy this flag and submit it on the scoreboard.') }}
+  </div>
+</div>

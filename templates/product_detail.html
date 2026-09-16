@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} &mdash; GuardianMart{% endblock %}
+
+{% block content %}
+<p class="muted"><a href="{{ url_for('products') }}">&larr; Back to catalogue</a></p>
+
+<div class="card">
+  <div style="display:flex; gap:24px; flex-wrap:wrap;">
+    <div style="flex:0 0 240px;">
+      <div class="product-thumb" style="height:180px; font-size:15px;">{{ product.name }}</div>
+    </div>
+    <div style="flex:1 1 320px;">
+      <h1>{{ product.name }}</h1>
+      <p class="page-sub"><span class="pill">{{ product.category }}</span></p>
+      <p>{{ product.description }}</p>
+      <div class="price" style="font-size:24px; font-weight:700; color:var(--gm-navy); margin:12px 0;">
+        &#8377;{{ '%.2f'|format(product.price) }}
+      </div>
+      <p class="muted">Product ID {{ product.id }} &middot; {{ product.stock }} in stock</p>
+
+      {% if logged_in_session %}
+        <form method="post" action="{{ url_for('basket') }}" class="form-inline" style="margin-top:12px;">
+          <input type="hidden" name="action" value="add">
+          <input type="hidden" name="product_id" value="{{ product.id }}">
+          <div>
+            <label for="qty">Quantity</label>
+            <input class="qty-input" type="number" id="qty" name="qty" value="1" step="1">
+          </div>
+          <div><button class="btn" type="submit">Add to basket</button></div>
+        </form>
+      {% else %}
+        <p><a class="btn" href="{{ url_for('login') }}">Log in to order</a></p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Claims &mdash; GuardianMart{% endblock %}
+
+{% block content %}
+<h1>Claim documents</h1>
+<p class="page-sub">Upload supporting documents for your benefit claims. PDF only.</p>
+
+{% if flag %}
+  {% set flag_value = flag %}
+  {% set flag_note = 'A file that is not a PDF was accepted and stored. The only type check in this application runs in your own browser.' %}
+  {% include "_flag.html" %}
+{% endif %}
+
+<div class="card form-narrow">
+  {# A08: accept=".pdf" and the onsubmit handler in static/js/app.js are the
+     ONLY type validation anywhere. The server saves whatever arrives and
+     serves it back with a guessed content type. #}
+  <form method="post" action="{{ url_for('claims') }}"
+        enctype="multipart/form-data"
+        onsubmit="return validateClaimUpload(this);">
+    <div class="form-row">
+      <label for="claim_file">Claim document (PDF)</label>
+      <input type="file" id="claim_file" name="claim_file" accept=".pdf">
+    </div>
+    <button class="btn" type="submit">Upload document</button>
+  </form>
+</div>
+
+<div class="card">
+  <div class="card-title">My uploaded documents</div>
+  {% if claims %}
+    <ul class="file-list">
+      {% for c in claims %}
+        <li>
+          <a href="{{ url_for('uploaded_file', filename=c.filename) }}" target="_blank">{{ c.original_filename }}</a>
+          <div class="muted">Uploaded {{ c.uploaded_at }} &middot; stored as <span class="mono">{{ c.filename }}</span></div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted" style="margin:0;">No documents uploaded yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

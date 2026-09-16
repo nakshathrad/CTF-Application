@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.id }} &mdash; GuardianMart{% endblock %}
+
+{% block content %}
+<p class="muted"><a href="{{ url_for('orders') }}">&larr; Back to my orders</a></p>
+
+<h1>Order #{{ order.id }}</h1>
+<p class="page-sub">Placed {{ order.created_at }}</p>
+
+{# A01a: this page has no ownership check at all — order.user_id is never
+   compared against the session's user_id. If the delivery notes on this
+   order carry a flag, the player has reached an order that isn't theirs. #}
+{% if order.delivery_notes and order.delivery_notes.startswith('GLIC{') %}
+  {% set flag_value = order.delivery_notes %}
+  {% set flag_note = 'This order belongs to user ID ' ~ order.user_id ~ ', not to you. Nothing stopped you from reading it.' %}
+  {% include "_flag.html" %}
+{% endif %}
+
+{% if logged_in_session and order.user_id != logged_in_session.user_id %}
+  <div class="alert alert-info">
+    Heads up: this order was placed by user ID {{ order.user_id }}, which is
+    not the account you are signed in as.
+  </div>
+{% endif %}
+
+<div class="card">
+  <div class="card-title">Delivery details</div>
+  <table>
+    <tr><th>Placed by</th><td>User ID {{ order.user_id }}</td></tr>
+    <tr><th>Address</th><td>{{ order.address }}</td></tr>
+    <tr><th>Delivery notes</th><td>{{ order.delivery_notes or '—' }}</td></tr>
+    <tr><th>Status</th><td><span class="pill">{{ order.status }}</span></td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-title">Items</div>
+  <div class="table-wrap" style="margin-bottom:0;">
+    <table>
+      <thead>
+        <tr>
+          <th>Benefit</th>
+          <th class="text-right">Unit price</th>
+          <th class="text-right">Qty</th>
+          <th class="text-right">Line total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in items %}
+          <tr>
+            <td>{{ i.product_name }}</td>
+            <td class="text-right">&#8377;{{ '%.2f'|format(i.unit_price) }}</td>
+            <td class="text-right">{{ i.qty }}</td>
+            <td class="text-right">&#8377;{{ '%.2f'|format(i.line_total) }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="totals" style="margin-top:12px;">
+    <div class="grand"><span>Order total</span><span>&#8377;{{ '%.2f'|format(order.total) }}</span></div>
+  </div>
+</div>
+{% endblock %}

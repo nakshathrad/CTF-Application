@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Basket &mdash; GuardianMart{% endblock %}
+
+{% block content %}
+<h1>Your basket</h1>
+<p class="page-sub">Review your items, apply a coupon, and place your order.</p>
+
+{% if coupon_flag %}
+  {% set flag_value = coupon_flag %}
+  {% set flag_note = 'The coupon validator threw an exception on that code and fell through to "valid, 100% off" instead of rejecting it.' %}
+  {% include "_flag.html" %}
+{% endif %}
+
+{% if not items %}
+  <div class="card empty-state">
+    Your basket is empty.
+    <div style="margin-top:12px;"><a class="btn" href="{{ url_for('products') }}">Browse the catalogue</a></div>
+  </div>
+{% else %}
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Benefit</th>
+          <th class="text-right">Unit price</th>
+          <th>Quantity</th>
+          <th class="text-right">Line total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+          <tr>
+            <td>{{ item.name }}<div class="muted">Product ID {{ item.product_id }}</div></td>
+            <td class="text-right">&#8377;{{ '%.2f'|format(item.unit_price) }}</td>
+            <td>
+              <form method="post" action="{{ url_for('basket') }}" class="form-inline">
+                <input type="hidden" name="action" value="update_qty">
+                <input type="hidden" name="index" value="{{ loop.index0 }}">
+                <input class="qty-input" type="number" name="qty" value="{{ item.qty }}" step="1">
+                <button class="btn btn-sm btn-secondary" type="submit">Update</button>
+              </form>
+            </td>
+            <td class="text-right">&#8377;{{ '%.2f'|format(item.unit_price * item.qty) }}</td>
+            <td class="nowrap">
+              <form method="post" action="{{ url_for('basket') }}">
+                <input type="hidden" name="action" value="remove">
+                <input type="hidden" name="index" value="{{ loop.index0 }}">
+                <button class="btn btn-sm btn-danger" type="submit">Remove</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Coupon code</div>
+    <form method="post" action="{{ url_for('basket') }}" class="form-inline">
+      <input type="hidden" name="action" value="apply_coupon">
+      <div style="flex:1 1 220px;">
+        <label for="coupon_code">Enter a coupon code</label>
+        <input type="text" id="coupon_code" name="coupon_code" placeholder="e.g. WELCOME10">
+      </div>
+      <div><button class="btn" type="submit">Apply coupon</button></div>
+    </form>
+
+    {% if applied_coupon %}
+      <div class="alert alert-info" style="margin-top:14px; margin-bottom:0;">
+        Coupon <strong>{{ applied_coupon.code }}</strong> applied &mdash;
+        {{ applied_coupon.discount_percent }}% off.
+        {# A04: the coupon token is base64-ENCODED, not encrypted. Decode it
+           in the DevTools console with atob('...') and read it straight off. #}
+        <div class="mono" style="margin-top:6px;">
+          coupon_token = {{ applied_coupon.encoded_value }}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  {% set discount_percent = applied_coupon.discount_percent if applied_coupon else 0 %}
+  {% set discount_amount = subtotal * discount_percent / 100.0 %}
+
+  <div class="card">
+    <div class="totals">
+      <div><span>Subtotal</span><span>&#8377;{{ '%.2f'|format(subtotal) }}</span></div>
+      <div><span>Discount ({{ discount_percent }}%)</span><span>&minus;&#8377;{{ '%.2f'|format(discount_amount) }}</span></div>
+      <div class="grand"><span>Total</span><span>&#8377;{{ '%.2f'|format(subtotal - discount_amount) }}</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Delivery &amp; checkout</div>
+
+    {# A06: every line's unit_price and qty round-trip through the client as
+       hidden fields, and /checkout trusts them to compute the order total.
+       No server-side re-pricing against the products table, and no lower
+       bound on quantity. This is a design bug, not a filtering bug. #}
+    <form method="post" action="{{ url_for('checkout') }}">
+      {% for item in items %}
+        <input type="hidden" name="product_id" value="{{ item.product_id }}">
+        <input type="hidden" name="name" value="{{ item.name }}">
+        <input type="hidden" name="qty" value="{{ item.qty }}">
+        <input type="hidden" name="unit_price" value="{{ item.unit_price }}">
+      {% endfor %}
+
+      <div class="form-row form-narrow">
+        <label for="address">Delivery address</label>
+        <input type="text" id="address" name="address"
+               value="Guardian LIC Towers, OMR, Chennai">
+      </div>
+      <div class="form-row form-narrow">
+        <label for="delivery_notes">Delivery notes (optional)</label>
+        <input type="text" id="delivery_notes" name="delivery_notes"
+               placeholder="e.g. Leave at reception">
+      </div>
+      <button class="btn" type="submit">Place order</button>
+    </form>
+  </div>
+
+{% endif %}
+{% endblock %}

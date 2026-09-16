@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}My profile &mdash; GuardianMart{% endblock %}
+
+{% block content %}
+<h1>My profile</h1>
+<p class="page-sub">Keep your contact details up to date.</p>
+
+{% if flag %}
+  {% set flag_value = flag %}
+  {% set flag_note = 'This page is showing you administrator content because your session cookie says so.' %}
+  {% include "_flag.html" %}
+{% endif %}
+
+<div class="card form-narrow">
+  <form method="post" action="{{ url_for('profile') }}">
+    <div class="form-row">
+      <label for="name">Full name</label>
+      <input type="text" id="name" name="name" value="{{ user.name }}">
+    </div>
+    <div class="form-row">
+      <label for="email">Email address</label>
+      <input type="email" id="email" name="email" value="{{ user.email }}">
+    </div>
+    <div class="form-row">
+      <label for="department">Department</label>
+      <input type="text" id="department" name="department" value="{{ user.department or '' }}">
+    </div>
+    <div class="form-row">
+      <label for="phone">Phone</label>
+      <input type="text" id="phone" name="phone" value="{{ user.phone or '' }}">
+    </div>
+    <button class="btn" type="submit">Save changes</button>
+  </form>
+</div>
+
+<div class="card">
+  <div class="card-title">Account</div>
+  <table>
+    <tr><th>User ID</th><td>{{ user.id }}</td></tr>
+    <tr><th>Role on record</th><td>{{ user.role }}</td></tr>
+    <tr><th>Role in this session</th>
+        <td>
+          {{ logged_in_session.role }}
+          {% if is_admin_session %}<span class="pill pill-admin">administrator view</span>{% endif %}
+        </td></tr>
+  </table>
+</div>
+
+{% if is_admin_session %}
+  <div class="card">
+    <div class="card-title">Administrator shortcuts</div>
+    <p><a class="btn btn-sm" href="{{ url_for('admin_panel') }}">Admin panel</a>
+       <a class="btn btn-sm btn-secondary" href="{{ url_for('support_admin') }}">Ticket queue</a></p>
+  </div>
+{% endif %}
+{% endblock %}
