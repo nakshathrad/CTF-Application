@@ -1,0 +1,20 @@
+-- GuardianMart users export -- generated 2024-11-02 03:00 UTC
+-- Source: prod snapshot, pre-migration. Internal use only, do not commit.
+-- Format: id,name,email,password_plaintext,password_md5
+--
+-- NOTE (2024-11-02): three accounts below still show unsalted MD5 from
+-- the old auth service; migration to plaintext-in-users-table was meant
+-- to be a TEMPORARY compatibility shim during cutover. It was not.
+
+id,name,email,password_plaintext,password_md5
+1,Guardian Admin,admin@guardianmart.local,Welcome@123,
+2,Aditi Rao,aditi.rao@guardianmart.local,,fc8e65cc1925bf301fdf44a3d460b266
+3,Rohan Mehta,rohan.mehta@guardianmart.local,,a8de3a9ece95b09b7925d80cef2713ea
+4,Priya Sharma,priya.sharma@guardianmart.local,,4cde13613afe0defc203ffa547f55431
+5,Kiran Kumar,kiran.kumar@guardianmart.local,Kiran@123,
+6,Ananya Iyer,ananya.iyer@guardianmart.local,Ananya@123,
+0,backup-auditor,auditor@guardianmart.local,GLIC{plaintext_backups_never_forget},
+
+-- end of export --
+-- Reminder to self: encoding a coupon code in base64 on the basket page
+-- is NOT the same as encrypting it either. Raised as a separate finding.
