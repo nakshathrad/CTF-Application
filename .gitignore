@@ -1,0 +1,16 @@
+# Generated at runtime — recreate with `python seed.py`
+guardianmart.db
+
+# Player-uploaded claim documents
+uploads/*
+!uploads/.gitkeep
+
+# Runtime logs (contain seeded credentials by design)
+logs/*.log
+!logs/.gitkeep
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
